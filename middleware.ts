@@ -10,7 +10,7 @@ const protectedRoutes = [
   "/stockin",
   "/upload",
   "/user",
-  "/",
+  "/stockin",
 ];
 const publicRoutes = ["/login"];
 
