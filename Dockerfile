@@ -5,9 +5,8 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install -force
 
+RUN npm install --force
 COPY . .
+CMD [ "sh","-c","npm run db:generate && npm run dev"]
 
-
-CMD ["sh","-c","npm run db:generate && npm run dev"]
