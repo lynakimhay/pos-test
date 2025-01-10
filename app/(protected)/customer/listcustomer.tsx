@@ -11,13 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PurchaseModel } from "@/models/api/purchaseModel";
+import { CustomerModel } from "@/models/api/customerModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
 
 interface Props {
   title: string;
-  data: PaginationData<PurchaseModel>;
+  data: PaginationData<CustomerModel>;
 }
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
@@ -40,30 +40,28 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search products..." />
-        <Button>Add Product</Button>
+        <Button>Add Customer</Button>
       </div>
 
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>SupplierId</TableHead>
-              <TableHead>Reference Number</TableHead>
-              <TableHead>Stock In Date</TableHead>
-              <TableHead>Number Of item</TableHead>
-              <TableHead>Purchase Amount</TableHead>
-
+              <TableHead>FirstName</TableHead>
+              <TableHead>LastName</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Address</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.supplierId}</TableCell>
-                <TableCell>{item.referenceNumber}</TableCell>
-                <TableCell>{item.stockInDate.toLocaleDateString()}</TableCell>
-                {/* <TableCell>{item.supplier.supplierName}</TableCell> */}
-                <TableCell>{item.numberOfItems}</TableCell>
-                <TableCell>{item.purchaseAmount}</TableCell>
+                <TableCell>{item.firstName}</TableCell>
+                <TableCell>{item.lastName}</TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item.phone}</TableCell>
+                <TableCell>{item.address}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -75,7 +73,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         onPrevClick={handlePrevClick}
         onNextClick={handleNextClick}
         onPageClick={(i) => handlePageClick(i)}
-        path="/stockin"
+        path="/customer"
         data={paginatedData}
       />
     </div>
