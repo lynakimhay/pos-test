@@ -3,7 +3,10 @@ import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
   const data = await prisma.promotion.findMany();
-  return NextResponse.json({ message: "Hello", data });
+  // console.log("...........",data);
+  
+  return NextResponse.json({ message: "data", data });
+
 }
 export async function POST(request: NextRequest) {
   try {

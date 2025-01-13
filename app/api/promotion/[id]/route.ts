@@ -55,7 +55,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   const { id } = params;
 
   const promotion = await prisma.promotion.findUnique({
-    where: { id: parseInt(id) },
+    where: { id: parseInt(id) },   //parseInt() is a function in JavaScript used to convert a string into an integer.
   });
 
   if (!promotion) {

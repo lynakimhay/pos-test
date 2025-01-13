@@ -47,7 +47,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search promotions..." />
-        <Button>Add Promotion</Button>
+        <Button >Add Promotion</Button>
       </div>
 
       <div className="rounded-md border">
