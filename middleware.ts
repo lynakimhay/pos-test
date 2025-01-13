@@ -9,6 +9,8 @@ const protectedRoutes = [
   "/stockin",
   "/upload",
   "/user",
+
+  "/supplier"
   "/stockin/add-purchase",
   "/",
 ];
