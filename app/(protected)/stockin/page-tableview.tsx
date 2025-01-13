@@ -11,14 +11,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { productsModel } from "@/models/api/ProductsModel";
+import { PurchaseModel } from "@/models/api/purchaseModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
 
-
 interface Props {
   title: string;
-  data: PaginationData<productsModel>;
+  data: PaginationData<PurchaseModel>;
 }
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
@@ -48,23 +47,23 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Id</TableHead>
-              <TableHead>English Name</TableHead>
-              <TableHead>Khmer name</TableHead>
-              <TableHead>category</TableHead>
-              <TableHead>sku</TableHead>
-              <TableHead>Image</TableHead>
+              <TableHead>SupplierId</TableHead>
+              <TableHead>Reference Number</TableHead>
+              <TableHead>Stock In Date</TableHead>
+              <TableHead>Number Of item</TableHead>
+              <TableHead>Purchase Amount</TableHead>
+
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>{item.nameEn}</TableCell>
-                <TableCell>{item.nameKh}</TableCell>
-                <TableCell>{item.category}</TableCell>
-                <TableCell>{item.sku}</TableCell>
-                <TableCell>{item.ImageUrl}</TableCell>
+                <TableCell>{item.supplierId}</TableCell>
+                <TableCell>{item.referenceNumber}</TableCell>
+                <TableCell>{item.stockInDate.toLocaleDateString()}</TableCell>
+                {/* <TableCell>{item.supplier.supplierName}</TableCell> */}
+                <TableCell>{item.numberOfItems}</TableCell>
+                <TableCell>{item.purchaseAmount}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -76,7 +75,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         onPrevClick={handlePrevClick}
         onNextClick={handleNextClick}
         onPageClick={(i) => handlePageClick(i)}
-        path="/product"
+        path="/stockin"
         data={paginatedData}
       />
     </div>
