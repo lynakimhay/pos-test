@@ -17,7 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ProductRefModel } from "@/app/api/product0/route";
+import { ProductRefModel } from "@/app/api/product/route";
 
 interface ItemSelectModalProps {
   open: boolean;
