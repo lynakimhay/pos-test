@@ -94,10 +94,21 @@ const AddCustomer: React.FC = () => {
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-96">
+    <form 
+      onSubmit={handleSubmit} 
+      className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl"
+    >
+      <h2 className="text-xl font-bold mb-6 text-center">Add Customer</h2>
+      
+      <div className="grid grid-cols-2 gap-6">
         {['firstName', 'lastName', 'email', 'phone', 'address'].map((field) => (
           <div key={field} className="mb-4">
-            <label htmlFor={field} className="block text-sm font-medium text-gray-700 capitalize">{field}</label>
+            <label 
+              htmlFor={field} 
+              className="block text-sm font-medium text-gray-700 capitalize"
+            >
+              {field}
+            </label>
             <input
               type={field === 'email' ? 'email' : 'text'}
               name={field}
@@ -105,23 +116,36 @@ const AddCustomer: React.FC = () => {
               value={formData[field as keyof FormData]}
               onChange={handleChange}
               placeholder={`Enter your ${field}`}
-              className={`mt-1 block w-full rounded-md border ${errors[field as keyof Errors] ? 'border-red-500' : 'border-gray-300'} shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
+              className={`mt-1 block w-full rounded-md border ${
+                errors[field as keyof Errors] 
+                  ? 'border-red-500' 
+                  : 'border-gray-300'
+              } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
             />
-            {errors[field as keyof Errors] && <p className="text-red-500 text-sm mt-1">{errors[field as keyof Errors]}</p>}
+            {errors[field as keyof Errors] && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors[field as keyof Errors]}
+              </p>
+            )}
           </div>
         ))}
-
-        <button 
-          type="submit" 
-          className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-          disabled={loading}
-        >
-          {loading ? 'Submitting...' : 'Submit'}
-        </button>
-
-        {submitSuccess && <p className="text-green-500 text-sm mt-2">Customer added successfully!</p>}
-      </form>
-    </div>
+      </div>
+  
+      <button 
+        type="submit" 
+        className="w-full py-3 px-4 mt-6 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        disabled={loading}
+      >
+        {loading ? 'Submitting...' : 'Submit'}
+      </button>
+  
+      {submitSuccess && (
+        <p className="text-green-500 text-sm mt-4 text-center">
+          Customer added successfully!
+        </p>
+      )}
+    </form>
+  </div>  
   );
 };
 
