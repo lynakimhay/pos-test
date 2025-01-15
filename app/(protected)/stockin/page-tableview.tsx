@@ -14,7 +14,7 @@ import {
 import { PurchaseModel } from "@/models/api/purchaseModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
-
+import Link from "next/link";
 interface Props {
   title: string;
   data: PaginationData<PurchaseModel>;
@@ -40,7 +40,9 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search products..." />
+        <Link href="/stockin/add-purchase">
         <Button>Add Product</Button>
+        </Link>
       </div>
 
       <div className="rounded-md border">

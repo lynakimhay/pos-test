@@ -52,3 +52,4 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json({ message: "Supplier created", data: newSupplier });
 }
+
