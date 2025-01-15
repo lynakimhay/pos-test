@@ -3,8 +3,11 @@ import PageWrapper from "@/components/page-wrapper";
 import { PageTableView } from "./listcustomer";
 import { getPaginatedCustomers } from "@/services/customerServices";
 
+interface PageProps {
+  searchParams: { [key: string]: string | undefined };
+}
 
-const CustomerPage = async ({ searchParams }: { searchParams: Record<string, string> }) => {
+const CustomerPage = async ({ searchParams }: PageProps ) => {
   const page = parseInt(searchParams.page || "1");
   const data = await getPaginatedCustomers({ pageSize: 10, currentPage: page });
 
@@ -14,3 +17,4 @@ const CustomerPage = async ({ searchParams }: { searchParams: Record<string, str
 };
 
 export default CustomerPage;
+
