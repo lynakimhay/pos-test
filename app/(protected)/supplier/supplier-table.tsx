@@ -131,7 +131,8 @@ export const SupplierTable: React.FC<SupplierTableProps> = ({ title, data }) => 
           value={searchQuery}
           onChange={handleSearchChange}
         />
-        <Button>Add Supplier</Button>
+        
+        <a href="/supplier/add-supplier"><Button>Add Supplier</Button></a>
       </div>
       <div className="rounded-md border">
         <Table>
