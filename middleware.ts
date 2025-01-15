@@ -10,6 +10,7 @@ const protectedRoutes = [
   "/upload",
   "/user",
   "/promotion",
+  "/promotion/create",
   "/supplier",
   "/stockin/add-purchase",
   "/customer",

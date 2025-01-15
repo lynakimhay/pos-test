@@ -47,7 +47,9 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search promotions..." />
-        <Button>Add Promotion</Button>
+        <a href="/promotion/create"> <Button >Add Promotion</Button></a>
+      
+        
       </div>
 
       <div className="rounded-md border">
@@ -82,7 +84,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         onPrevClick={handlePrevClick}
         onNextClick={handleNextClick}
         onPageClick={handlePageClick}
-        path="/user"
+        path="/promotion"
         data={paginatedData}
       />
     </div>
