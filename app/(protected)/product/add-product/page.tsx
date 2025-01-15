@@ -21,9 +21,12 @@ interface CategoryProduct{
 
 import React, { useState, useEffect} from "react";
 import PageWrapper from "@/components/page-wrapper";
+import { useRouter } from 'next/navigation';
+
 
 
 const AddProductPage = () => {
+    const router = useRouter(); // Initialize useRouter
     // Form field states
     const [nameEn, setNameEn] = useState("");
 
@@ -108,7 +111,9 @@ const [categories, setCategories] = useState<CategoryProduct[]>([]);
                 message: data.message || 'Product created successfully!',
                 type: 'success'
             });
-            
+            setTimeout(() => {
+                router.push('/product'); // Replace '/product' with your product page route
+            }, 1500);
         } catch (error) {
             console.error('Error creating product:', error);
             setStatus({
