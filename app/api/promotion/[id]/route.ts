@@ -1,66 +1,33 @@
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
-
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
-
-  try {
-    await prisma.promotion.delete({
-      where: { id: parseInt(id) },
-    });
-    return NextResponse.json({ message: "Customer deleted successfully!" });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to delete customer", details: (error as Error).message },
-      { status: 400 }
-    );
-  }
-}
-
-export async function PUT( request: NextRequest,{ params }: { params: { id: string } }) {
-  const { id } = params;
-
-  try {
-    const body = await request.json();
-    const {
-      promotionCode,
-      description,
-      startDate,
-      endDate,
-      discountPercentage,
-    } = body;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const updatedPromotion = await prisma.promotion.update({
-      where: { id: parseInt(id) },
-      data: {
-        promotionCode,
-        description,
-        startDate: start,
-        endDate: end,
-        discountPercentage,
-      },
-    });
-
-    return NextResponse.json({message: "Promotion updated successfully!", updatedPromotion, });
-  } catch (error) {
-    return NextResponse.json({ error: "Failed to update promotion",   details: (error as Error).message, }, { status: 400 });
-  }
-}
-
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params;
-
-  const promotion = await prisma.promotion.findUnique({
-    where: { id: parseInt(id) },   //parseInt() is a function in JavaScript used to convert a string into an integer.
-  });
-
-  if (!promotion) {
-    return NextResponse.json({ error: "Promotion not found" }, { status: 404 });
+    const { id } = params;
+  
+    const promotion = await prisma.promotion.findUnique({
+      where: { id: parseInt(id) },
+    });
+  
+    if (!promotion) {
+      return NextResponse.json({ error: "Promotion not found" }, { status: 404 });
+    }
+  
+    return NextResponse.json(promotion);
   }
-
-  return NextResponse.json(promotion);
-}
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+    try {
+      const data = await request.json();
+      const updatedPromotion = await prisma.promotion.update({ where: { id: parseInt(params.id) }, data });
+      return NextResponse.json({ success: true, data: updatedPromotion });
+    } catch {
+      return NextResponse.json({ success: false, error: "Failed to update promotion" }, { status: 400 });
+    }
+  }
+  
+  export async function DELETE(_request: NextRequest, { params }: { params: { id: string } }) {
+    try {
+      await prisma.promotion.delete({ where: { id: parseInt(params.id) } });
+      return NextResponse.json({ success: true, message: "Promotion deleted" });
+    } catch {
+      return NextResponse.json({ success: false, error: "Failed to delete promotion" }, { status: 400 });
+    }
+  }

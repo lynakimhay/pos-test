@@ -3,7 +3,7 @@ import PaginationData from "@/models/PaginationData";
 import prisma from "@/lib/prisma";
 
 
-export const createPromotion = async ({ pageSize = 10, currentPage = 1 }: { pageSize?: number, currentPage?: number }): Promise<PaginationData<PromotionModel>> => {
+export const getPaginatedPromotions = async ({ pageSize = 10, currentPage = 1 }: { pageSize?: number, currentPage?: number }): Promise<PaginationData<PromotionModel>> => {
     const data = await prisma.promotion.findMany({
         skip: pageSize * (currentPage - 1),
         take: pageSize,
@@ -25,6 +25,7 @@ export const createPromotion = async ({ pageSize = 10, currentPage = 1 }: { page
         totalPages: totalPages,
         records: data.map(item => {
             return {
+                id:item.id,
                 promotionCode: item.promotionCode,
                 description: item.description,
                 startDate: item.startDate ? item.startDate.toISOString() : null,

@@ -12,7 +12,7 @@ export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("1hr")
+    .setExpirationTime("12hr")
     .sign(key);
 }
 
@@ -41,6 +41,12 @@ export async function createSession(userId: string) {
   });
 
   redirect("/dashboard");
+}
+
+export async function createSessionAPI(userId: string) {
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  const session = await encrypt({ userId, expiresAt });
+  return session;
 }
 
 export async function verifySession() {
