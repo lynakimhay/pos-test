@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -22,17 +23,20 @@ interface Props {
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
   const [paginatedData, setPaginatedData] = useState(data);
+  const router = useRouter();
 
-  const handlePrevClick = () => setPaginatedData((prev) => {
-    return { ...prev, currentPage: data.prevPage };
-  });
+  const handlePrevClick = () =>
+    setPaginatedData((prev) => {
+      return { ...prev, currentPage: data.prevPage };
+    });
 
   const handleNextClick = () =>
     setPaginatedData((prev) => {
       return { ...prev, currentPage: data.nextPage };
     });
 
-  const handlePageClick = (i: number) => setPaginatedData({ ...paginatedData, currentPage: i + 1 })
+  const handlePageClick = (i: number) =>
+    setPaginatedData({ ...paginatedData, currentPage: i + 1 });
 
   return (
     <div className="space-y-6">
@@ -41,7 +45,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search products..." />
         <a href="/customer/create">
-        <Button>Add Customer</Button>
+          <Button>Add Customer</Button>
         </a>
       </div>
 
@@ -58,7 +62,18 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
-              <TableRow key={item.id}>
+              <TableRow
+                key={item.id}
+                onClick={() => router.push(`/customer/info?id=${item.id}`)}
+                style={{ cursor: "pointer" }}
+                role="link"
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.textDecoration = "underline")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.textDecoration = "none")
+                }
+              >
                 <TableCell>{item.firstName}</TableCell>
                 <TableCell>{item.lastName}</TableCell>
                 <TableCell>{item.email}</TableCell>
@@ -80,4 +95,4 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
       />
     </div>
   );
-}
+};
