@@ -47,21 +47,20 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>SupplierId</TableHead>
-              <TableHead>Reference Number</TableHead>
-              <TableHead>Stock In Date</TableHead>
-              <TableHead>Number Of item</TableHead>
-              <TableHead>Purchase Amount</TableHead>
+              <TableHead>No</TableHead>
+              <TableHead>StockInDate</TableHead>
+              <TableHead>Supplier</TableHead>
+              <TableHead>Total-Items</TableHead>
+              <TableHead>Amounts</TableHead>
 
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.supplierId}</TableCell>
-                <TableCell>{item.referenceNumber}</TableCell>
+              <TableRow key={item.referenceNumber}>
+                 <TableCell>{item.referenceNumber}</TableCell>
                 <TableCell>{item.stockInDate.toLocaleDateString()}</TableCell>
-                {/* <TableCell>{item.supplier.supplierName}</TableCell> */}
+                <TableCell>{item.supplierName}</TableCell>
                 <TableCell>{item.numberOfItems}</TableCell>
                 <TableCell>{item.purchaseAmount}</TableCell>
               </TableRow>
