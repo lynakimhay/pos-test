@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +16,6 @@ import { productsModel } from "@/models/api/ProductsModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
 
-
 interface Props {
   title: string;
   data: PaginationData<productsModel>;
@@ -23,17 +23,24 @@ interface Props {
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
   const [paginatedData, setPaginatedData] = useState(data);
+  const router = useRouter(); // Initialize useRouter
 
-  const handlePrevClick = () => setPaginatedData((prev) => {
-    return { ...prev, currentPage: data.prevPage };
-  });
+  const handlePrevClick = () =>
+    setPaginatedData((prev) => {
+      return { ...prev, currentPage: data.prevPage };
+    });
 
   const handleNextClick = () =>
     setPaginatedData((prev) => {
       return { ...prev, currentPage: data.nextPage };
     });
 
-  const handlePageClick = (i: number) => setPaginatedData({ ...paginatedData, currentPage: i + 1 })
+  const handlePageClick = (i: number) =>
+    setPaginatedData({ ...paginatedData, currentPage: i + 1 });
+
+  const handleAddProductClick = () => {
+    router.push("product/add-product"); // Replace with your actual "Add Product" page route
+  };
 
   return (
     <div className="space-y-6">
@@ -41,7 +48,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search products..." />
-        <Button>Add Product</Button>
+        <Button onClick={handleAddProductClick}>Add Product</Button> {/* Add click handler */}
       </div>
 
       <div className="rounded-md border">
@@ -51,8 +58,8 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
               <TableHead>Id</TableHead>
               <TableHead>English Name</TableHead>
               <TableHead>Khmer name</TableHead>
-              <TableHead>category</TableHead>
-              <TableHead>sku</TableHead>
+              <TableHead>Category</TableHead>
+              <TableHead>SKU</TableHead>
               <TableHead>Image</TableHead>
             </TableRow>
           </TableHeader>
@@ -81,4 +88,4 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
       />
     </div>
   );
-}
+};
