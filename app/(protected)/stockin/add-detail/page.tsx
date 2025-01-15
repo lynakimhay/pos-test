@@ -28,7 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { AddPurchaseItemDetailModal } from "./add-purchase-item-detail-modal";
+import { AddPurchaseItemDetailModal } from "./add-detail-item-modal";
 import PageWrapper from "@/components/page-wrapper";
 import { ProductRefModel } from "@/app/api/product/route";
 import { SupplierModel } from "@/models/api/supplierModel";
