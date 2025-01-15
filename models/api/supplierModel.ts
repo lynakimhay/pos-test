@@ -1,17 +1,3 @@
-// export interface SupplierModel {
-//     supplierName: string;
-//     contactName?: string;
-//     contactEmail?: string;
-//     contactPhone?: string;
-//     addressLine1: string;
-//     addressLine2: string;
-//     province?: string;
-//     websiteUrl: string;
-//     taxIdentification?  : string;
-//     createdAt: string;
-//     updatedAt: string;
-// }
-
 
 import DataModel from "./model";
 
