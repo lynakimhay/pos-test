@@ -15,6 +15,7 @@ const Layout = async ({
   const defaultOpen = cookies().get("sidebar:state")?.value === "true";
   const cookie = cookies().get("session")?.value;
   const session = await decrypt(cookie);
+  console.log('cookie:',cookie)
   const { userId } = session as { userId: number };
 
   return (

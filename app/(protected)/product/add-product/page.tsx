@@ -12,18 +12,35 @@ interface StatusMessage {
     message: string;
     type: 'success' | 'error' | '';
 }
+
+interface CategoryProduct{
+    id: number;
+    nameEn: string
+}
 // app/page.tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import PageWrapper from "@/components/page-wrapper";
+
 
 const AddProductPage = () => {
     // Form field states
     const [nameEn, setNameEn] = useState("");
+
+   
     const [nameKh, setNameKh] = useState("");
     const [categoryId, setCategoryId] = useState("");
     const [sku, setSku] = useState("");
     
+const [categories, setCategories] = useState<CategoryProduct[]>([]);
+
+    useEffect(() => {
+      fetch("/api/category", { credentials: "same-origin" })
+          .then((response) => response.json())
+          .then((data) => setCategories(data.data))
+          .catch((error) => console.error("Error fetching roles:", error));
+  }, []);
+  
     // Status message state
     const [status, setStatus] = useState<StatusMessage>({ 
         message: '', 
@@ -155,20 +172,30 @@ const AddProductPage = () => {
 
                     {/* Category ID */}
                     <div>
-                        <label htmlFor="categoryId" className="block text-gray-700 font-medium">
-                            Category ID <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="number"  // Changed to number type
-                            id="categoryId"
-                            value={categoryId}
-                            onChange={(e) => setCategoryId(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Enter category ID"
-                            min="1"  // Added min value
-                            required
-                        />
-                    </div>
+            <label
+              htmlFor="categoryId"
+              className="block text-gray-700 font-medium"
+            >
+              Category ID <span className="text-red-500">*</span>
+            </label>
+            <select
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              id="categoryId"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)} // Set categoryId instead
+            >
+              <option value="">Select CategoryId</option>
+              {categories.map((categories) => (
+                <option key={categories.id} value={categories.id}>
+                  {categories.nameEn}
+                </option>
+              ))}
+            </select>
+
+            {status.type === "error" && (
+              <p className="text-sm text-red-600">{status.message}</p>
+            )}
+          </div>
 
                     {/* SKU */}
                     <div>
