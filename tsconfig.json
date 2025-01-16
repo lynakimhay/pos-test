@@ -1,6 +1,6 @@
 {
-  
   "compilerOptions": {
+    // "types": ["node"],
     "sourceMap": true,
     "lib": [
       "dom",
@@ -27,7 +27,8 @@
       "@/*": [
         "./*"
       ]
-    }
+    },
+    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",

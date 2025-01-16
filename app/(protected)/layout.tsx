@@ -12,9 +12,11 @@ const Layout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const defaultOpen = cookies().get("sidebar:state")?.value === "true";
-  const cookie = cookies().get("session")?.value;
+  const cookiesInstance = await cookies(); // Await the cookies() call
+  const defaultOpen = cookiesInstance.get("sidebar:state")?.value === "true";
+  const cookie = cookiesInstance.get("session")?.value;
   const session = await decrypt(cookie);
+  console.log("cookie:", cookie);
   const { userId } = session as { userId: number };
 
   return (
