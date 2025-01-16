@@ -59,7 +59,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
-              <TableRow key={item.referenceNumber}>
+              <TableRow key={item.id}>
                  <TableCell>{item.referenceNumber}</TableCell>
                 <TableCell>{item.stockInDate.toLocaleDateString()}</TableCell>
                 <TableCell>{item.supplierName}</TableCell>
