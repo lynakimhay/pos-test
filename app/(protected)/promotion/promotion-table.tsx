@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -22,7 +23,7 @@ interface Props {
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
   const [paginatedData, setPaginatedData] = useState(data);
-
+  const router = useRouter();
   const handlePrevClick = () => {
     if (paginatedData.prevPage && paginatedData.prevPage >= 1) {
       setPaginatedData((prev) => ({ ...prev, currentPage: paginatedData.prevPage }));
@@ -65,7 +66,16 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
           </TableHeader>
           <TableBody>
             {paginatedData.records.map((item) => (
-              <TableRow key={item.promotionCode}>
+              <TableRow key={item.id}
+              onClick={() => router.push(`/promotion/info?id=${item.id}`)}
+              style={{ cursor: "pointer" }}
+              role="link"
+              onMouseOver={(e) =>
+                (e.currentTarget.style.textDecoration = "underline")
+              }
+              onMouseOut={(e) =>
+                (e.currentTarget.style.textDecoration = "none")
+              }>
                 <TableCell>{item.promotionCode}</TableCell>
                 <TableCell>{item.description}</TableCell>
                 <TableCell>{new Date(item.startDate).toLocaleDateString()}</TableCell>
