@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import prisma from "@/lib/prisma";
-import { createSessionAPI } from "@/app/auth/stateless-session";
+import { createSession } from "@/app/auth/stateless-session";
 
 export async function POST(req: Request) {
   try {
@@ -30,7 +30,7 @@ export async function POST(req: Request) {
     }
 
     const userId = user.id.toString();
-    const session = await createSessionAPI(userId);
+    const session = await createSession(userId);
 
     return NextResponse.json({
       message: "Authorized",
