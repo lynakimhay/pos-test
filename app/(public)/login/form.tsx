@@ -6,10 +6,10 @@ import { Label } from "@/components/ui/label";
 import { loginWithFormData } from "@/app/auth/auth";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
-import { useActionState } from "react"; // Updated import
+import { useFormState } from "react-dom"; // Updated import
 
 export function LoginForm() {
-  const [state, action] = useActionState(loginWithFormData, undefined); // Updated hook
+  const [state, action] = useFormState(loginWithFormData, undefined); // Updated hook
 
   return (
     <form action={action}>
