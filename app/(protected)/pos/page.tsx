@@ -41,21 +41,21 @@ export default function POSPage() {
     { id: "3", name: "Sneakers", price: 79.99, image: "/placeholder.svg" },
     { id: "4", name: "Hat", price: 14.99, image: "/placeholder.svg" },
     { id: "5", name: "Socks", price: 9.99, image: "/placeholder.svg" },
-    { id: "1", name: "T-Shirt", price: 19.99, image: "/placeholder.svg" },
-    { id: "2", name: "Jeans", price: 49.99, image: "/placeholder.svg" },
-    { id: "3", name: "Sneakers", price: 79.99, image: "/placeholder.svg" },
-    { id: "4", name: "Hat", price: 14.99, image: "/placeholder.svg" },
-    { id: "5", name: "Socks", price: 9.99, image: "/placeholder.svg" },
-    { id: "1", name: "T-Shirt", price: 19.99, image: "/placeholder.svg" },
-    { id: "2", name: "Jeans", price: 49.99, image: "/placeholder.svg" },
-    { id: "3", name: "Sneakers", price: 79.99, image: "/placeholder.svg" },
-    { id: "4", name: "Hat", price: 14.99, image: "/placeholder.svg" },
-    { id: "5", name: "Socks", price: 9.99, image: "/placeholder.svg" },
-    { id: "1", name: "T-Shirt", price: 19.99, image: "/placeholder.svg" },
-    { id: "2", name: "Jeans", price: 49.99, image: "/placeholder.svg" },
-    { id: "3", name: "Sneakers", price: 79.99, image: "/placeholder.svg" },
-    { id: "4", name: "Hat", price: 14.99, image: "/placeholder.svg" },
-    { id: "5", name: "Socks", price: 9.99, image: "/placeholder.svg" },
+    { id: "6", name: "T-Shirt 2", price: 19.99, image: "/placeholder.svg" },
+    { id: "7", name: "Jeans 2", price: 49.99, image: "/placeholder.svg" },
+    { id: "8", name: "Sneakers 2", price: 79.99, image: "/placeholder.svg" },
+    { id: "9", name: "Hat 2", price: 14.99, image: "/placeholder.svg" },
+    { id: "10", name: "Socks 2", price: 9.99, image: "/placeholder.svg" },
+    { id: "11", name: "T-Shirt", price: 19.99, image: "/placeholder.svg" },
+    { id: "12", name: "Jeans", price: 49.99, image: "/placeholder.svg" },
+    { id: "13", name: "Sneakers", price: 79.99, image: "/placeholder.svg" },
+    { id: "14", name: "Hat", price: 14.99, image: "/placeholder.svg" },
+    { id: "15", name: "Socks", price: 9.99, image: "/placeholder.svg" },
+    { id: "16", name: "T-Shirt 2", price: 19.99, image: "/placeholder.svg" },
+    { id: "17", name: "Jeans 2", price: 49.99, image: "/placeholder.svg" },
+    { id: "18", name: "Sneakers 2", price: 79.99, image: "/placeholder.svg" },
+    { id: "19", name: "Hat 2", price: 14.99, image: "/placeholder.svg" },
+    { id: "20", name: "Socks 2", price: 9.99, image: "/placeholder.svg" },
   ];
 
   const addToCart = (product: Product) => {
@@ -107,21 +107,23 @@ export default function POSPage() {
         <ScrollArea className="flex-1 bg-white rounded-lg shadow-md p-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((product) => (
-              <Card
-                key={product.id}
-                className="p-4 cursor-pointer hover:shadow-lg transition-shadow"
-                onClick={() => addToCart(product)}
-              >
-                <Image
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-32 object-cover rounded-md mb-2"
-                />
-                <h3 className="font-medium">{product.name}</h3>
-                <p className="text-sm text-gray-500">
-                  ${product.price.toFixed(2)}
-                </p>
-              </Card>
+             <Card
+             key={product.id}
+             className="p-4 cursor-pointer hover:shadow-lg transition-shadow"
+             onClick={() => addToCart(product)}
+           >
+             <Image
+               src={product.image}
+               alt={product.name}
+               width={128} // Set the desired width
+               height={128} // Set the desired height
+               className="w-full h-32 object-cover rounded-md mb-2"
+             />
+             <h3 className="font-medium">{product.name}</h3>
+             <p className="text-sm text-gray-500">
+               ${product.price.toFixed(2)}
+             </p>
+           </Card>
             ))}
           </div>
         </ScrollArea>

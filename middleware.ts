@@ -6,10 +6,12 @@ const protectedRoutes = [
   "/dashboard",
   "/pos",
   "/product",
+  "/product/add-product",
   "/stockin",
   "/upload",
   "/user",
   "/promotion",
+  "/promotion/create",
   "/supplier",
   "/stockin/add-purchase",
   "/customer",
@@ -28,8 +30,8 @@ export default async function middleware(req: NextRequest) {
   const isApiRoute = path.startsWith("/api");
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
-
-  const cookie = cookies().get("session");
+  const cookieStore = await cookies();
+  const cookie = cookieStore.get("session");
 
   console.log("path:", path);
 

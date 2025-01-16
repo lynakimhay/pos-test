@@ -32,7 +32,8 @@ export async function createSession(userId: string) {
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
   const session = await encrypt({ userId, expiresAt });
 
-  cookies().set("session", session, {
+  const cookieStore = await cookies(); // Await here
+  cookieStore.set("session", session, {
     httpOnly: true,
     secure: true,
     expires: expiresAt,
@@ -43,14 +44,9 @@ export async function createSession(userId: string) {
   redirect("/dashboard");
 }
 
-export async function createSessionAPI(userId: string) {
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
-  return session;
-}
-
 export async function verifySession() {
-  const cookie = cookies().get("session")?.value;
+  const cookieStore = await cookies(); // Await here
+  const cookie = cookieStore.get("session")?.value;
   const session = await decrypt(cookie);
 
   if (!session?.userId) {
@@ -60,8 +56,21 @@ export async function verifySession() {
   return { isAuth: true, userId: Number(session.userId) };
 }
 
+export async function getSessionData() {
+  const cookieStore = await cookies(); // Await here
+  const cookie = cookieStore.get("session")?.value;
+  const session = await decrypt(cookie);
+
+  if (!session?.userId) {
+    return;
+  }
+
+  return { isAuth: true, userId: Number(session.userId) };
+}
+
 export async function updateSession() {
-  const session = cookies().get("session")?.value;
+  const cookieStore = await cookies(); // Await here
+  const session = cookieStore.get("session")?.value;
   const payload = await decrypt(session);
 
   if (!session || !payload) {
@@ -69,7 +78,7 @@ export async function updateSession() {
   }
 
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  cookies().set("session", session, {
+  cookieStore.set("session", session, {
     httpOnly: true,
     secure: true,
     expires: expires,
@@ -78,7 +87,8 @@ export async function updateSession() {
   });
 }
 
-export function deleteSession() {
-  cookies().delete("session");
+export async function deleteSession() {
+  const cookieStore = await cookies(); // Await here
+  cookieStore.delete("session");
   redirect("/login");
 }

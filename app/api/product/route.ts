@@ -1,3 +1,4 @@
+import { getSessionData } from "@/app/auth/stateless-session";
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
 export interface ProductRefModel {
@@ -12,7 +13,16 @@ export interface ProductRefModel {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nameEn, nameKh, categoryId, sku, createdBy, updatedBy } = body;
+    const { nameEn, nameKh, categoryId, sku } = body;
+
+    const session = await getSessionData();
+
+    if(!session) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
 
     // Fetch the latest productCode
     const latestProduct = await prisma.product.findFirst({
@@ -35,8 +45,8 @@ export async function POST(request: NextRequest) {
         nameKh,
         categoryId: categoryId,
         sku,
-        createdBy,
-        updatedBy,
+        createdBy: session?.userId,
+        updatedBy: session?.userId,
       },
     });
 

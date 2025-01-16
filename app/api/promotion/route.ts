@@ -1,52 +1,39 @@
+
 import { NextResponse, NextRequest } from "next/server";
 import prisma from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
-  const data = await prisma.promotion.findMany();
-  return NextResponse.json({ message: "Hello", data });
+interface PromotionFormData {
+  promotionCode: string;
+  description?: string;
+  startDate: Date;
+  endDate: Date;
+  discountPercentage: number;
+  imageUrl?: string;
 }
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const {
-      promotionCode,
-      description,
-      startDate,
-      endDate,
-      discountPercentage
-    } = body;
+    const data = await request.json();
+    
+    const newData: PromotionFormData = {
+      promotionCode: data.promotionCode,
+      description: data.description,
+      startDate: new Date(data.startDate),
+      endDate: new Date(data.endDate),
+      discountPercentage: parseFloat(data.discountPercentage),
+    };
 
-    // console.log(startDate, typeof startDate);
-
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    console.log(end, typeof end);
-    console.log(start, typeof start);
-
-    const newPromotion = await prisma.promotion.create({
-      data: {
-        promotionCode,
-        description,
-        startDate: start,
-        endDate: end,
-        discountPercentage,
-      },
-    });
-
-    return NextResponse.json({
-      message: "Promotion created successfully!",
-      newPromotion,
-    });
+    const promotion = await prisma.promotion.create({ data: newData });
+    return NextResponse.json({ success: true, data: promotion });
   } catch (error) {
-    return NextResponse.json(
-      {
-        error: "Failed to create Promotion",
-        details: (error as Error).message,
-      },
-      { status: 400 }
-    );
+    console.log(error);
+    return NextResponse.json({ success: false, error: 'eroor'});
   }
 }
+export async function GET(request: NextRequest) {
+  const data = await prisma.promotion.findMany();
+  // console.log("...........",data);
+  
+  return NextResponse.json({ message: "data", data });
 
-
-
+}
