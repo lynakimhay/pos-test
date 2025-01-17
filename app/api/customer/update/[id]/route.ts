@@ -8,6 +8,8 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
         const body = await request.json();
         const { firstName, lastName, email, phone, address } = body;
 
+        console.log(firstName, lastName, email, phone, address);
+        
         const updatedCustomer = await prisma.customer.update({
             where: { id: parseInt(id) },
             data: {
