@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/popover";
 import { AddPurchaseItemDetailModal } from "./add-purchase-item-detail-modal";
 import PageWrapper from "@/components/page-wrapper";
-import { ProductRefModel } from "@/app/api/product/route";
+import { ProductModel } from "@/app/api/product/route";
 import { SupplierModel } from "@/models/api/supplierModel";
 import { useRouter } from "next/navigation";
 interface PurchaseDetail {
@@ -54,8 +54,8 @@ export default function AddPurchasePage() {
   // Ref Data
   const router = useRouter();
   const [suppliers, setSuppliers] = useState<SupplierModel[]>([]);
-  const [products, setProducts] = useState<ProductRefModel[]>([]);
-  const [selectedProduct , setSelectedProduct] = useState <ProductRefModel | null>(null);
+  const [products, setProducts] = useState<ProductModel[]>([]);
+  const [selectedProduct , setSelectedProduct] = useState <ProductModel | null>(null);
 
   // Form Master
   const [refDate, setRefDate] = useState<Date>(new Date());
@@ -88,7 +88,7 @@ export default function AddPurchasePage() {
     fetch("/api/product", { credentials: "same-origin" })
       .then((res) => res.json())
       .then((data) => {
-        const products = data.data as ProductRefModel[];
+        const products = data.data as ProductModel[];
         setProducts(products);
       });
   }, []);

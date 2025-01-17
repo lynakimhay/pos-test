@@ -35,17 +35,35 @@ export async function DELETE(request:NextRequest, {params}:{params:{id:string}})
     
 }
 
-export async function GET(request:NextRequest, {params}:{params:{id:string}}) {
-    const {id}=params;
-    try{
-        const getUniguetockIn = await prisma.stockIn.findUnique({
-            where: { id: parseInt(id) },
-        });
-        return NextResponse.json({ message: "get unique stock success",data: getUniguetockIn  })
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+    const { id } = params;
+    try {
+        const parsedId = parseInt(id);
 
-    }catch(error){
-        console.log(error)
-        return NextResponse.json({ message: "delete failed!"  }, {status: 500})
+        if (isNaN(parsedId)) {
+            return NextResponse.json(
+                { message: "Invalid stock ID" },
+                { status: 400 }
+            );
+        }
+
+        const stockIn = await prisma.stockIn.findUnique({
+            where: { id: parsedId },
+            include: {
+                stockInDetails: true, // Include related stockInDetails
+            },
+        });
+
+        if (!stockIn) {
+            return NextResponse.json(
+                { message: "Stock not found" },
+                { status: 404 }
+            );
+        }
+
+        return NextResponse.json({ message: "Stock retrieved successfully", data: stockIn });
+    } catch (error) {
+        console.error("Error retrieving stock:", error);
+        return NextResponse.json({ message: "Error retrieving stock" }, { status: 500 });
     }
-    
 }
