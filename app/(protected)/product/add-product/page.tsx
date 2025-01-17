@@ -1,182 +1,213 @@
 "use client";
 
-interface ProductFormData {
-    nameEn: string;
-    nameKh: string;
-    categoryId: number;  // Changed to number
-    sku: string;
-    createdBy: string;
-    updatedBy: string;
-}
-interface StatusMessage {
-    message: string;
-    type: 'success' | 'error' | '';
-}
-
-interface CategoryProduct{
-    id: number;
-    nameEn: string
-}
-// app/page.tsx
-
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import PageWrapper from "@/components/page-wrapper";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
+interface ProductFormData {
+  nameEn: string;
+  nameKh: string;
+  categoryId: number;
+  sku: string;
+  imageUrl: string; // New field for image URL
+  createdBy: string;
+  updatedBy: string;
+}
 
+interface StatusMessage {
+  message: string;
+  type: "success" | "error" | "";
+}
+
+interface CategoryProduct {
+  id: number;
+  nameEn: string;
+}
 
 const AddProductPage = () => {
-    const router = useRouter(); // Initialize useRouter
-    // Form field states
-    const [nameEn, setNameEn] = useState("");
+  const router = useRouter();
 
-   
-    const [nameKh, setNameKh] = useState("");
-    const [categoryId, setCategoryId] = useState("");
-    const [sku, setSku] = useState("");
-    
-const [categories, setCategories] = useState<CategoryProduct[]>([]);
+  // Form field states
+  const [nameEn, setNameEn] = useState("");
+  const [nameKh, setNameKh] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [sku, setSku] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-    useEffect(() => {
-      fetch("/api/category", { credentials: "same-origin" })
-          .then((response) => response.json())
-          .then((data) => setCategories(data.data))
-          .catch((error) => console.error("Error fetching roles:", error));
+  // Categories state
+  const [categories, setCategories] = useState<CategoryProduct[]>([]);
+
+  useEffect(() => {
+    fetch("/api/category", { credentials: "same-origin" })
+      .then((response) => response.json())
+      .then((data) => setCategories(data.data))
+      .catch((error) => console.error("Error fetching categories:", error));
   }, []);
-  
-    // Status message state
-    const [status, setStatus] = useState<StatusMessage>({ 
-        message: '', 
-        type: '' 
-    });
-    
-    // Loading state
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        
-        // Basic validation
-        if (!nameEn || !nameKh || !categoryId || !sku) {
-            setStatus({
-                message: 'Please fill in all required fields',
-                type: 'error'
-            });
-            return;
-        }
+  // Status message state
+  const [status, setStatus] = useState<StatusMessage>({
+    message: "",
+    type: "",
+  });
 
-        // Validate that categoryId is a valid number
-        const categoryIdNum = parseInt(categoryId, 10);
-        if (isNaN(categoryIdNum)) {
-            setStatus({
-                message: 'Category ID must be a valid number',
-                type: 'error'
-            });
-            return;
-        }
-        
-        const formData: ProductFormData = {
-            nameEn,
-            nameKh,
-            categoryId: categoryIdNum, // Convert to number
-            sku,
-            createdBy: "1",
-            updatedBy: "1"
-        };
-        
-        setIsLoading(true);
-        
-        try {
-            const response = await fetch('/api/product', {  // Updated to match your API endpoint
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+  // Loading state
+  const [isLoading, setIsLoading] = useState(false);
 
-            const data = await response.json();
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImageFile(e.target.files[0]);
+    }
+  };
 
-            if (!response.ok) {
-                throw new Error(data.message || 'Failed to create product');
-            }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-            // Clear form
-            setNameEn('');
-            setNameKh('');
-            setCategoryId('');
-            setSku('');
-            
-            setStatus({
-                message: data.message || 'Product created successfully!',
-                type: 'success'
-            });
-            setTimeout(() => {
-                router.push('/product'); // Replace '/product' with your product page route
-            }, 1500);
-        } catch (error) {
-            console.error('Error creating product:', error);
-            setStatus({
-                message: error instanceof Error ? error.message : 'Failed to create product. Please try again.',
-                type: 'error'
-            });
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    // Basic validation
+    if (!nameEn || !nameKh || !categoryId || !sku || !imageFile) {
+      setStatus({
+        message: "Please fill in all required fields, including the image.",
+        type: "error",
+      });
+      return;
+    }
 
-    return (
-        <PageWrapper>
-            <div className="max-w-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
-                <h1 className="text-3xl font-bold text-gray-800">Add Product</h1>
-                
-                {status.message && (
-                    <div 
-                        className={`p-4 rounded ${
-                            status.type === 'success' 
-                                ? 'bg-green-100 text-green-700' 
-                                : 'bg-red-100 text-red-700'
-                        }`}
-                    >
-                        {status.message}
-                    </div>
-                )}
+    // Validate that categoryId is a valid number
+    const categoryIdNum = parseInt(categoryId, 10);
+    if (isNaN(categoryIdNum)) {
+      setStatus({
+        message: "Category ID must be a valid number",
+        type: "error",
+      });
+      return;
+    }
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {/* Product Name (English) */}
-                    <div>
-                        <label htmlFor="nameEn" className="block text-gray-700 font-medium">
-                            Product Name (English) <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="nameEn"
-                            value={nameEn}
-                            onChange={(e) => setNameEn(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Enter product name in English"
-                            required
-                        />
-                    </div>
+    setIsLoading(true);
 
-                    {/* Product Name (Khmer) */}
-                    <div>
-                        <label htmlFor="nameKh" className="block text-gray-700 font-medium">
-                            Product Name (Khmer) <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="nameKh"
-                            value={nameKh}
-                            onChange={(e) => setNameKh(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Enter product name in Khmer"
-                            required
-                        />
-                    </div>
+    try {
+      // Upload the image
+      const formDataImage = new FormData();
+      formDataImage.append("file", imageFile);
 
-                    {/* Category ID */}
-                    <div>
+      const uploadResponse = await fetch("/api/upload", {
+        method: "POST",
+        credentials: "same-origin",
+        body: formDataImage,
+      });
+
+      if (!uploadResponse.ok) {
+        throw new Error("Image upload failed");
+      }
+
+      const uploadData = await uploadResponse.json();
+      const imageUrl = uploadData.secure_url;
+
+      // Prepare product data
+      const formData: ProductFormData = {
+        nameEn,
+        nameKh,
+        categoryId: categoryIdNum,
+        sku,
+        imageUrl, // Include uploaded image URL
+        createdBy: "1",
+        updatedBy: "1",
+      };
+
+      // Submit product data
+      const response = await fetch("/api/product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to create product");
+      }
+
+      // Clear form
+      setNameEn("");
+      setNameKh("");
+      setCategoryId("");
+      setSku("");
+      setImageFile(null);
+
+      setStatus({
+        message: data.message || "Product created successfully!",
+        type: "success",
+      });
+
+      setTimeout(() => {
+        router.push("/product"); // Replace with your product page route
+      }, 1500);
+    } catch (error) {
+      console.error("Error creating product:", error);
+      setStatus({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create product. Please try again.",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <PageWrapper>
+      <div className="max-w-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
+        <h1 className="text-3xl font-bold text-gray-800">Add Product</h1>
+
+        {status.message && (
+          <div
+            className={`p-4 rounded ${
+              status.type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {status.message}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Product Name (English) */}
+          <div>
+            <label htmlFor="nameEn" className="block text-gray-700 font-medium">
+              Product Name (English) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="nameEn"
+              value={nameEn}
+              onChange={(e) => setNameEn(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              placeholder="Enter product name in English"
+              required
+            />
+          </div>
+
+          {/* Product Name (Khmer) */}
+          <div>
+            <label htmlFor="nameKh" className="block text-gray-700 font-medium">
+              Product Name (Khmer) <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="nameKh"
+              value={nameKh}
+              onChange={(e) => setNameKh(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              placeholder="Enter product name in Khmer"
+              required
+            />
+          </div>
+
+          {/* Category ID */}
+          <div>
             <label
               htmlFor="categoryId"
               className="block text-gray-700 font-medium"
@@ -187,53 +218,68 @@ const [categories, setCategories] = useState<CategoryProduct[]>([]);
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               id="categoryId"
               value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)} // Set categoryId instead
+              onChange={(e) => setCategoryId(e.target.value)}
+              required
             >
-              <option value="">Select CategoryId</option>
-              {categories.map((categories) => (
-                <option key={categories.id} value={categories.id}>
-                  {categories.nameEn}
+              <option value="">Select Category</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.nameEn}
                 </option>
               ))}
             </select>
-
-            {status.type === "error" && (
-              <p className="text-sm text-red-600">{status.message}</p>
-            )}
           </div>
 
-                    {/* SKU */}
-                    <div>
-                        <label htmlFor="sku" className="block text-gray-700 font-medium">
-                            SKU <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                            type="text"
-                            id="sku"
-                            value={sku}
-                            onChange={(e) => setSku(e.target.value)}
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-                            placeholder="Enter SKU"
-                            required
-                        />
-                    </div>
+          {/* SKU */}
+          <div>
+            <label htmlFor="sku" className="block text-gray-700 font-medium">
+              SKU <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="sku"
+              value={sku}
+              onChange={(e) => setSku(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              placeholder="Enter SKU"
+              required
+            />
+          </div>
 
-                    {/* Submit Button */}
-                    <div className="text-right">
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 ${
-                                isLoading ? 'opacity-50 cursor-not-allowed' : ''
-                            }`}
-                        >
-                            {isLoading ? 'Creating...' : 'Submit'}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </PageWrapper>
-    );
+          {/* Image Upload */}
+          <div>
+            <label
+              htmlFor="imageFile"
+              className="block text-gray-700 font-medium"
+            >
+              Upload Product Image <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="file"
+              id="imageFile"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="mt-1 block w-full text-gray-700 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="text-right">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Creating..." : "Submit"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </PageWrapper>
+  );
 };
 
 export default AddProductPage;
