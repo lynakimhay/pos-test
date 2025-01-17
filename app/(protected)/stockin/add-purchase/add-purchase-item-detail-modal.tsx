@@ -17,13 +17,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ProductRefModel } from "@/app/api/product/route";
+import { ProductModel } from "@/app/api/product/route";
 
 interface ItemSelectModalProps {
   open: boolean;
-  products: ProductRefModel[];
+  products: ProductModel[];
   onOpenChange: (open: boolean) => void;
-  onItemSelect: (item: ProductRefModel) => void;
+  onItemSelect: (item: ProductModel) => void;
 }
 
 export function AddPurchaseItemDetailModal({

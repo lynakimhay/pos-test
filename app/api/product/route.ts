@@ -1,7 +1,7 @@
 import { getSessionData } from "@/app/auth/stateless-session";
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-export interface ProductRefModel {
+export interface ProductModel {
   id: number;
   nameEn: string;
   nameKh: string;
