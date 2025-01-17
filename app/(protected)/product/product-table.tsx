@@ -15,6 +15,7 @@ import {
 import { productsModel } from "@/models/api/ProductsModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
+import Link from 'next/link'
 
 interface Props {
   title: string;
@@ -44,7 +45,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">{title}</h1>
+      <h1 className=" text-3xl font-bold">{title}</h1>
 
       <div className="flex justify-between items-center">
         <Input className="max-w-sm" placeholder="Search products..." />
@@ -66,7 +67,8 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
           <TableBody>
             {paginatedData.records.map((item) => (
               <TableRow key={item.id}>
-                <TableCell>{item.id}</TableCell>
+                
+                <TableCell><Link href={`/product-info/${item.id}`} className="block p-3 text-blue-700  text-sm font-bold">View</Link></TableCell>
                 <TableCell>{item.nameEn}</TableCell>
                 <TableCell>{item.nameKh}</TableCell>
                 <TableCell>{item.category}</TableCell>

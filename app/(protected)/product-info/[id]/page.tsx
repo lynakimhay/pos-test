@@ -95,7 +95,7 @@ export default function ProductDetails() {
 
   return (
     <PageWrapper>
-      <div className="max-w-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
+      <div className="max-w-full-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
         <h1 className="text-3xl font-bold text-gray-800">Edit Product</h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -174,7 +174,7 @@ export default function ProductDetails() {
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isLoading ? "Updating..." : "Update Product"}
+              {isLoading ? "Updating..." : "Update"}Product
             </button>
           </div>
         </form>
