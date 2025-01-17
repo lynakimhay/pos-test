@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation"; // Import useRouter
 import PageWrapper from "@/components/page-wrapper";
 
 interface Product {
@@ -29,6 +29,7 @@ export default function ProductDetails() {
   const [category, setCategory] = useState<ProductCategory[]>([]);
 
   const { id } = useParams();
+  const router = useRouter(); // Initialize useRouter
 
   useEffect(() => {
     if (!id) return;
@@ -66,28 +67,12 @@ export default function ProductDetails() {
     e.preventDefault();
     setIsLoading(true);
 
-  //   try {
-  //     const response = await fetch(/api/product/${id}, {
-  //       method: "PUT",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(0),
-  //     });
+    // Add your update product logic here
+    setIsLoading(false);
+  };
 
-  //     const data = await response.json();
-  //     console.log('Response:', data); 
-  //     if (response.ok) {
-  //       alert("Product updated successfully!");
-  //     } else {
-  //       setError(data.message);
-  //     }
-  //   } catch (err) {
-  //     console.error("Failed to update product:", err);
-  //     setError("Something went wrong.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
+  const handleCancel = () => {
+    router.push("/product"); // Navigate back to the product list page
   };
 
   if (loading) return <p>Loading...</p>;
@@ -129,10 +114,7 @@ export default function ProductDetails() {
             />
           </div>
 
-
-
-
-<div>
+          <div>
             <label htmlFor="categoryId" className="block text-gray-700 font-medium">
               Category ID <span className="text-red-500">*</span>
             </label>
@@ -166,7 +148,14 @@ export default function ProductDetails() {
             />
           </div>
 
-          <div className="text-right">
+          <div className="flex justify-end space-x-4">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
+            >
+              Cancel
+            </button>
             <button
               type="submit"
               disabled={isLoading}
@@ -174,7 +163,7 @@ export default function ProductDetails() {
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isLoading ? "Updating..." : "Update"}Product
+              {isLoading ? "Updating..." : "Update"}
             </button>
           </div>
         </form>
