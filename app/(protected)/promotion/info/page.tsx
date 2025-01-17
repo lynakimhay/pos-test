@@ -167,77 +167,81 @@ const AddPromotion: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl"
-      >
-        <h2 className="text-xl font-bold mb-6 text-center">Update Promotion</h2>
-
-        <div className="grid grid-cols-2 gap-6">
-          {Object.keys(formData).map((field) => (
-            <div key={field} className="mb-4">
-              <label
-                htmlFor={field}
-                className="block text-sm font-medium text-gray-700 capitalize"
-              >
-                {field}
-              </label>
-              <input
-                type={field.includes("Date") ? "date" : "text"}
-                name={field}
-                id={field}
-                value={formData[field as keyof FormData] || ""}
-                onChange={handleChange}
-                placeholder={`Enter ${field}`}
-                className={`mt-1 block w-full rounded-md border ${errors[field as keyof Errors] ? "border-red-500" : "border-gray-300"
-                  } shadow-sm focus:border-indigo-500 focus:ring-indigo-500`}
-              />
-              {errors[field as keyof Errors] && (
-                <p className="text-red-500 text-sm mt-1">
-                  {errors[field as keyof Errors]}
-                </p>
-              )}
-            </div>
-          ))}
-
-        </div>
-
-        <div className="flex justify-between mt-6">
-          <div className="flex gap-4">
-            <button
-              type="submit"
-              className="py-3 px-4 bg-indigo-600 text-white font-semibold rounded-md shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              disabled={loading}
+    <div className="flex items-center justify-center bg-gray-100 ">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-10 rounded-lg shadow-lg w-full"
+    >
+      <h2 className="text-2xl font-bold mb-8 text-center text-gray-800">
+        Update Promotion
+      </h2>
+  
+      <div className="grid grid-cols-2 gap-6">
+        {Object.keys(formData).map((field) => (
+          <div key={field} className="mb-4">
+            <label
+              htmlFor={field}
+              className="block text-base font-medium text-gray-700 capitalize"
             >
-              {loading ? "Updating..." : "Update"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => router.push("/promotion")}
-              className="py-3 px-4 bg-gray-500 text-white font-semibold rounded-md shadow-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-            >
-              Cancel
-            </button>
+              {field}
+            </label>
+            <input
+              type={field.includes("Date") ? "date" : "text"}
+              name={field}
+              id={field}
+              value={formData[field as keyof FormData] || ""}
+              onChange={handleChange}
+              placeholder={`Enter ${field}`}
+              className={`mt-2 block w-full rounded-lg border ${
+                errors[field as keyof Errors] ? "border-red-500" : "border-gray-300"
+              } shadow-sm focus:border-indigo-500 focus:ring-indigo-500 px-3 py-2 text-lg`}
+            />
+            {errors[field as keyof Errors] && (
+              <p className="text-red-500 text-sm mt-2">
+                {errors[field as keyof Errors]}
+              </p>
+            )}
           </div>
-
+        ))}
+      </div>
+  
+      <div className="flex justify-between items-center mt-8">
+        <div className="flex gap-6">
+       
+  
           <button
             type="button"
-            onClick={handleDelete}
-            className="py-3 px-4 bg-red-600 text-white font-semibold rounded-md shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            onClick={() => router.push("/promotion")}
+            className="py-2 px-6 bg-gray-500 text-white text-sm font-semibold rounded-lg shadow-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
-            Delete
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="py-2 px-6 bg-indigo-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update"}
           </button>
         </div>
-
-        {submitSuccess && (
-          <p className="text-green-500 text-sm mt-4 text-center">
-            Promotion updated successfully!
-          </p>
-        )}
-      </form>
-    </div>
+  
+        <button
+          type="button"
+          onClick={handleDelete}
+          className="py-2 px-6 bg-red-600 text-white text-sm font-semibold rounded-lg shadow-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        >
+          Delete
+        </button>
+      </div>
+  
+      {submitSuccess && (
+        <p className="text-green-500 text-lg mt-6 text-center">
+          Promotion updated successfully!
+        </p>
+      )}
+    </form>
+  </div>
+  
   );
 };
 
