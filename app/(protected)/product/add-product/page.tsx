@@ -158,7 +158,7 @@ const AddProductPage = () => {
 
   return (
     <PageWrapper>
-      <div className="max-w-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
+      <div className="max-w-full mx-auto p-6 space-y-6 bg-white shadow-md rounded">
         <h1 className="text-3xl font-bold text-gray-800">Add Product</h1>
 
         {status.message && (
@@ -269,7 +269,7 @@ const AddProductPage = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 ${
+              className={`py-2 px-6 bg-black text-white rounded focus:outline-none focus:ring focus:ring-blue-300 text-sm ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
