@@ -13,6 +13,7 @@ const protectedRoutes = [
   "/promotion",
   "/promotion/create",
   "/supplier",
+  "/supplier/info",
   "/stockin/add-purchase",
   "/customer",
 
