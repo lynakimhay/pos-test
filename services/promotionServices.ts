@@ -15,7 +15,6 @@ export const getPaginatedPromotions = async ({ pageSize = 10, currentPage = 1 }:
 
     const count = await prisma.promotion.count();
     const totalPages = Math.ceil(count / pageSize);
-
     const result: PaginationData<PromotionModel> = {
         pageSize,
         currentPage,
@@ -25,15 +24,17 @@ export const getPaginatedPromotions = async ({ pageSize = 10, currentPage = 1 }:
         totalPages: totalPages,
         records: data.map(item => {
             return {
-                id:item.id,
+                id: item.id, // Fixed syntax here
                 promotionCode: item.promotionCode,
                 description: item.description,
                 startDate: item.startDate ? item.startDate.toISOString() : null,
                 endDate: item.endDate ? item.endDate.toISOString() : null,
-                discountPercentage: item.discountPercentage
+                discountPercentage: item.discountPercentage,
             } as PromotionModel;
         }),
-    }
+    };
+    
+    
 
     return result;
 }
