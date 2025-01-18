@@ -11,6 +11,8 @@ import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation"; // Correct import
 import { AppInfoContext } from "@/components/app-wrapper";
 import PageWrapper from "@/components/page-wrapper";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface FormData {
   firstName: string;
@@ -132,16 +134,27 @@ const AddCustomer: React.FC = () => {
       setErrors({}); // Clear errors after successful submission
 
       // Navigate to /customer after successful submission
-      router.replace("/customer");
+      // console.success('Checklists deleted successfully.');
+      toast.success("Customer Update Successfully!", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+      setTimeout(() => {
+        router.replace("/customer");
+      }, 5500);
     } catch (error) {
+      toast.error("Failed To Update Customer", {
+        position: "top-center",
+        autoClose: 5000,
+      });
       console.error("Error:", error);
       setSubmitSuccess(false);
-      alert(`Error: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
   };
   console.log("customer", getCustomer);
+  
 
   const handleDelete = async () => {
     if (!id || !token) {
@@ -156,11 +169,19 @@ const AddCustomer: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        alert("Customer deleted successfully.");
-        router.push("/customer"); // Navigate back to the customer list
+        toast.success("Customer Delete Successfully!", {
+          position: "top-center",
+          autoClose: 5000,
+        });
+        setTimeout(() => {
+          router.replace("/customer");
+        }, 5500);
       } catch (error) {
+        toast.error("Failed To Delete Customer", {
+          position: "top-center",
+          autoClose: 5000,
+        });
         console.error("Error deleting customer:", error);
-        alert("Failed to delete customer.");
       }
     }
   };
@@ -242,6 +263,14 @@ const AddCustomer: React.FC = () => {
         )}
       </form>
     </div>
+    <ToastContainer
+          autoClose={5000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        /> 
     </PageWrapper>
   );
 };
