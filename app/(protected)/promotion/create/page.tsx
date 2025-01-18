@@ -115,7 +115,7 @@ const AddPromotion = () => {
               </label>
               <input
                 type="text"
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 id="promotionCode"
                 placeholder="Enter promotion code"
                 value={promotionCode}
@@ -131,7 +131,7 @@ const AddPromotion = () => {
               </label>
               <input
                 type="text"
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 id="description"
                 placeholder="Enter description"
                 value={description}
@@ -147,7 +147,7 @@ const AddPromotion = () => {
               </label>
               <input
                 type="date"
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 id="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
@@ -162,7 +162,7 @@ const AddPromotion = () => {
               </label>
               <input
                 type="date"
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 id="endDate"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
@@ -177,7 +177,7 @@ const AddPromotion = () => {
               </label>
               <input
                 type="number"
-                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                className="border rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                 id="discountPercentage"
                 placeholder="Enter discount percentage"
                 min="0"
@@ -198,7 +198,7 @@ const AddPromotion = () => {
               <input
                 type="file"
                 accept="image/*"
-                className="border rounded-md p-2"
+                className="border rounded-md p-3"
                 onChange={(e) => setImageFile(e.target.files ? e.target.files[0] : null)}
               />
               {errors.imageFile && <p className="text-sm text-red-500 mt-1">{errors.imageFile}</p>}
@@ -227,7 +227,7 @@ const AddPromotion = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`py-2 px-6 ${isLoading ? "bg-gray-400" : "bg-indigo-600"
+                className={`py-2 px-6 ${isLoading ? "bg-gray-400" : "bg-black"
                   } text-white font-semibold rounded-md shadow-md`}
               >
                 {isLoading ? "Saving..." : "Save"}

@@ -53,7 +53,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
         
       </div>
 
-      <div className="rounded-md border">
+      <div className="rounded-lg border">
         <Table>
           <TableHeader>
             <TableRow>
