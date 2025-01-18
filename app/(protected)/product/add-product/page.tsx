@@ -9,7 +9,6 @@ interface ProductFormData {
   nameKh: string;
   categoryId: number;
   sku: string;
-  imageUrl: string; // New field for image URL
   createdBy: string;
   updatedBy: string;
 }
@@ -24,6 +23,12 @@ interface CategoryProduct {
   nameEn: string;
 }
 
+interface ExistingProduct {
+  nameEn: string;
+  nameKh: string;
+  sku: string;
+}
+
 const AddProductPage = () => {
   const router = useRouter();
 
@@ -32,16 +37,21 @@ const AddProductPage = () => {
   const [nameKh, setNameKh] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [sku, setSku] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  // Categories state
   const [categories, setCategories] = useState<CategoryProduct[]>([]);
+  const [existingProducts, setExistingProducts] = useState<ExistingProduct[]>([]);
 
   useEffect(() => {
+    // Fetch categories from the API
     fetch("/api/category", { credentials: "same-origin" })
       .then((response) => response.json())
       .then((data) => setCategories(data.data))
       .catch((error) => console.error("Error fetching categories:", error));
+
+    // Fetch existing products to check for duplicates
+    fetch("/api/product", { credentials: "same-origin" })
+      .then((response) => response.json())
+      .then((data) => setExistingProducts(data.data))
+      .catch((error) => console.error("Error fetching existing products:", error));
   }, []);
 
   // Status message state
@@ -53,19 +63,13 @@ const AddProductPage = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setImageFile(e.target.files[0]);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Basic validation
-    if (!nameEn || !nameKh || !categoryId || !sku || !imageFile) {
+    if (!nameEn || !nameKh || !categoryId || !sku) {
       setStatus({
-        message: "Please fill in all required fields, including the image.",
+        message: "Please fill in all required fields.",
         type: "error",
       });
       return;
@@ -75,7 +79,20 @@ const AddProductPage = () => {
     const categoryIdNum = parseInt(categoryId, 10);
     if (isNaN(categoryIdNum)) {
       setStatus({
-        message: "Category ID must be a valid number",
+        message: "Category ID must be a valid number.",
+        type: "error",
+      });
+      return;
+    }
+
+    // Check for duplicate product details
+    const isDuplicate = existingProducts.some(
+      (product) =>
+        product.nameEn === nameEn || product.nameKh === nameKh || product.sku === sku
+    );
+    if (isDuplicate) {
+      setStatus({
+        message: "Product already exists.",
         type: "error",
       });
       return;
@@ -84,32 +101,14 @@ const AddProductPage = () => {
     setIsLoading(true);
 
     try {
-      // Upload the image
-      const formDataImage = new FormData();
-      formDataImage.append("file", imageFile);
-
-      const uploadResponse = await fetch("/api/upload", {
-        method: "POST",
-        credentials: "same-origin",
-        body: formDataImage,
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error("Image upload failed");
-      }
-
-      const uploadData = await uploadResponse.json();
-      const imageUrl = uploadData.secure_url;
-
       // Prepare product data
       const formData: ProductFormData = {
         nameEn,
         nameKh,
         categoryId: categoryIdNum,
         sku,
-        imageUrl, // Include uploaded image URL
-        createdBy: "1",
-        updatedBy: "1",
+        createdBy: "1", // Replace with actual user ID
+        updatedBy: "1", // Replace with actual user ID
       };
 
       // Submit product data
@@ -124,21 +123,23 @@ const AddProductPage = () => {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to create product");
+        throw new Error(data.message || "Failed to create product.");
       }
 
-      // Clear form
+      // Clear form fields
       setNameEn("");
       setNameKh("");
       setCategoryId("");
       setSku("");
-      setImageFile(null);
 
+      // Update status and add the new product to the list
       setStatus({
         message: data.message || "Product created successfully!",
         type: "success",
       });
+      setExistingProducts((prev) => [...prev, { nameEn, nameKh, sku }]);
 
+      // Redirect after success
       setTimeout(() => {
         router.push("/product"); // Replace with your product page route
       }, 1500);
@@ -242,24 +243,6 @@ const AddProductPage = () => {
               onChange={(e) => setSku(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               placeholder="Enter SKU"
-              required
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div>
-            <label
-              htmlFor="imageFile"
-              className="block text-gray-700 font-medium"
-            >
-              Upload Product Image <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="file"
-              id="imageFile"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="mt-1 block w-full text-gray-700 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
             />
           </div>
