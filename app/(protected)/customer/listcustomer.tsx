@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,28 @@ interface Props {
 
 export const PageTableView: React.FC<Props> = ({ title, data }) => {
   const [paginatedData, setPaginatedData] = useState(data);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredRecords, setFilteredRecords] = useState(data.records);
   const router = useRouter();
+
+  // Handle search filtering
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredRecords(paginatedData.records);
+    } else {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      setFilteredRecords(
+        paginatedData.records.filter(
+          (item) =>
+            item.firstName.toLowerCase().includes(lowerCaseQuery) ||
+            item.lastName.toLowerCase().includes(lowerCaseQuery) ||
+            item.email.toLowerCase().includes(lowerCaseQuery) ||
+            item.phone.toLowerCase().includes(lowerCaseQuery) ||
+            item.address.toLowerCase().includes(lowerCaseQuery)
+        )
+      );
+    }
+  }, [searchQuery, paginatedData.records]);
 
   const handlePrevClick = () =>
     setPaginatedData((prev) => {
@@ -41,9 +62,13 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">{title}</h1>
-
       <div className="flex justify-between items-center">
-        <Input className="max-w-sm" placeholder="Search products..." />
+        <Input
+          className="max-w-sm"
+          placeholder="Search Customer..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
         <a href="/customer/create">
           <Button>Add Customer</Button>
         </a>
@@ -61,7 +86,7 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedData.records.map((item) => (
+            {filteredRecords.map((item) => (
               <TableRow
                 key={item.id}
                 onClick={() => router.push(`/customer/info?id=${item.id}`)}

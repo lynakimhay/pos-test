@@ -10,6 +10,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation"; // Correct import
 import { AppInfoContext } from "@/components/app-wrapper";
+import PageWrapper from "@/components/page-wrapper";
 
 interface FormData {
   firstName: string;
@@ -165,10 +166,11 @@ const AddCustomer: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
+    <PageWrapper>
+    <div className="max-w-full mx-auto p-6 space-y-6 bg-white shadow-md rounded">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl"
+        className="space-y-4"
       >
         <h2 className="text-xl font-bold mb-6 text-center">Update Customer</h2>
 
@@ -189,7 +191,7 @@ const AddCustomer: React.FC = () => {
                   value={formData[field as keyof FormData] || ""}
                   onChange={handleChange}
                   placeholder={`Enter your ${field}`}
-                  className={`mt-1 block w-full rounded-md border ${
+                  className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300 ${
                     errors[field as keyof Errors]
                       ? "border-red-500"
                       : "border-gray-300"
@@ -240,6 +242,7 @@ const AddCustomer: React.FC = () => {
         )}
       </form>
     </div>
+    </PageWrapper>
   );
 };
 
