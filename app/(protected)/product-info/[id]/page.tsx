@@ -50,7 +50,7 @@ export default function ProductDetails() {
       .then((data) => setCategories(data.data))
       .catch((err) => console.error("Failed to fetch categories:", err));
 
-    // Fetch product details
+    // Fetch product details Get
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/product/${id}`);
@@ -80,7 +80,7 @@ export default function ProductDetails() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
+  //Update product
     try {
       const response = await fetch(`/api/product/${id}`, {
         method: "PUT",
@@ -98,6 +98,19 @@ export default function ProductDetails() {
       const data = await response.json();
       if (response.ok) {
         setStatus({ message: "Product updated successfully!", type: "success" });
+
+        // Fetch updated product details
+        const updatedProduct = await fetch(`/api/product/${id}`);
+        const updatedData = await updatedProduct.json();
+        if (updatedProduct.ok) {
+          setNameEn(updatedData.product.nameEn);
+          setNameKh(updatedData.product.nameKh);
+          setCategoryId(updatedData.product.categoryId);
+          setSku(updatedData.product.sku);
+          setTimeout(() => {
+            router.replace("/product");
+          }, 3000);
+        }
       } else {
         setStatus({ message: data.message || "Failed to update product.", type: "error" });
       }
@@ -106,6 +119,11 @@ export default function ProductDetails() {
       setStatus({ message: "Something went wrong. Please try again.", type: "error" });
     } finally {
       setIsLoading(false);
+
+      // Clear the status message after 3 seconds
+      setTimeout(() => {
+        setStatus({ message: "", type: "" });
+      }, 3000);
     }
   };
 
@@ -121,7 +139,7 @@ export default function ProductDetails() {
         setStatus({ message: "Product deleted successfully!", type: "success" });
         setTimeout(() => {
           router.push("/product"); // Redirect to product list page
-        }, 2000); // Wait for 2 seconds before redirecting
+        }, 3000); // Wait for 2 seconds before redirecting
       } else {
         setStatus({ message: data.message || "Failed to delete product.", type: "error" });
       }
