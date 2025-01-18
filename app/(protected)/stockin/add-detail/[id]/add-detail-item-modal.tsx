@@ -38,7 +38,7 @@ export function AddPurchaseItemDetailModal({
     const matchesSearch =
       item.productCode.toLowerCase().includes(searchTerm.toLowerCase()) ||
       item.nameEn.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.categoryNameEn.toLowerCase().includes(searchTerm.toLowerCase());
+      item.category.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesSearch;
   });
@@ -87,7 +87,7 @@ export function AddPurchaseItemDetailModal({
                     <TableCell>{item.productCode}</TableCell>
                     <TableCell>{item.nameEn}</TableCell>
                     <TableCell>{item.nameKh}</TableCell>
-                    <TableCell>{item.categoryNameEn}</TableCell>
+                    <TableCell>{item.category}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

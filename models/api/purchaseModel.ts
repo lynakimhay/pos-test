@@ -1,7 +1,7 @@
 import DataModel from "./model";
 
 export interface PurchaseModel extends DataModel {
-  id: string;
+  id: number;
   supplierId: number;
   referenceNumber: string;
   stockInDate: Date;
