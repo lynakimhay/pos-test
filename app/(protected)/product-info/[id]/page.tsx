@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation"; // Import useRouter
+import { useParams, useRouter } from "next/navigation";
 import PageWrapper from "@/components/page-wrapper";
 
 interface Product {
@@ -17,27 +17,40 @@ interface ProductCategory {
   nameEn: string;
 }
 
+interface StatusMessage {
+  message: string;
+  type: "success" | "error" | "";
+}
+
 export default function ProductDetails() {
   const [product, setProduct] = useState<Product | null>(null);
   const [nameEn, setNameEn] = useState<string>("");
   const [nameKh, setNameKh] = useState<string>("");
   const [categoryId, setCategoryId] = useState<number>(0);
   const [sku, setSku] = useState<string>("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [category, setCategory] = useState<ProductCategory[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [status, setStatus] = useState<StatusMessage>({
+    message: "",
+    type: "",
+  });
 
-  const { id } = useParams();
-  const router = useRouter(); // Initialize useRouter
+  const { id } = useParams(); // Access product ID from the route
+  const router = useRouter();
 
+  // Fetch product categories and product details
   useEffect(() => {
     if (!id) return;
 
+    // Fetch product categories
     fetch("/api/category", { credentials: "same-origin" })
       .then((response) => response.json())
-      .then((data) => setCategory(data.data));
+      .then((data) => setCategories(data.data))
+      .catch((err) => console.error("Failed to fetch categories:", err));
 
+    // Fetch product details
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/product/${id}`);
@@ -63,51 +76,84 @@ export default function ProductDetails() {
     fetchProduct();
   }, [id]);
 
+  // Handle form submission (update product)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Add your update product logic here
-    setIsLoading(false);
+    try {
+      const response = await fetch(`/api/product/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nameEn,
+          nameKh,
+          categoryId,
+          sku,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setStatus({ message: "Product updated successfully!", type: "success" });
+      } else {
+        setStatus({ message: data.message || "Failed to update product.", type: "error" });
+      }
+    } catch (err) {
+      console.error("Error updating product:", err);
+      setStatus({ message: "Something went wrong. Please try again.", type: "error" });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle delete product
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/product/${id}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setStatus({ message: "Product deleted successfully!", type: "success" });
+        setTimeout(() => {
+          router.push("/product"); // Redirect to product list page
+        }, 2000); // Wait for 2 seconds before redirecting
+      } else {
+        setStatus({ message: data.message || "Failed to delete product.", type: "error" });
+      }
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      setStatus({ message: "Something went wrong. Please try again.", type: "error" });
+    }
   };
 
   const handleCancel = () => {
     router.push("/product"); // Navigate back to the product list page
   };
 
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
-    if (!confirmDelete) return;
-
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/product/${id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (response.ok) {
-        alert("Product deleted successfully.");
-        router.push("/product"); // Navigate back to the product list page
-      } else {
-        const data = await response.json();
-        alert(`Failed to delete product: ${data.message}`);
-      }
-    } catch (err) {
-      console.error("Error deleting product:", err);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Show loading or error state
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <PageWrapper>
       <div className="max-w-full-2xl mx-auto p-6 space-y-6 bg-white shadow-md rounded">
-        <h1 className="text-3xl font-bold text-gray-800">Edit Product</h1>
+        <h1 className="text-3xl font-bold text-gray-800">Detail Product</h1>
+        {status.message && (
+          <div
+            className={`p-4 rounded ${
+              status.type === "success"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            }`}
+          >
+            {status.message}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -120,7 +166,6 @@ export default function ProductDetails() {
               value={nameEn}
               onChange={(e) => setNameEn(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter product name in English"
               required
             />
           </div>
@@ -135,23 +180,23 @@ export default function ProductDetails() {
               value={nameKh}
               onChange={(e) => setNameKh(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter product name in Khmer"
               required
             />
           </div>
 
           <div>
             <label htmlFor="categoryId" className="block text-gray-700 font-medium">
-              Category ID <span className="text-red-500">*</span>
+              Category <span className="text-red-500">*</span>
             </label>
             <select
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               id="categoryId"
               value={categoryId}
-              onChange={(e) => setCategoryId(Number(e.target.value))} // Convert the value to a number
+              onChange={(e) => setCategoryId(Number(e.target.value))}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
+              required
             >
-              <option value="">Select CategoryId</option>
-              {category.map((cat) => (
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.nameEn}
                 </option>
@@ -169,7 +214,6 @@ export default function ProductDetails() {
               value={sku}
               onChange={(e) => setSku(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
-              placeholder="Enter SKU"
               required
             />
           </div>
@@ -178,14 +222,14 @@ export default function ProductDetails() {
             <button
               type="button"
               onClick={handleCancel}
-              className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 focus:outline-none focus:ring focus:ring-gray-300"
+              className="px-6 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 ${
+              className={`px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 ${
                 isLoading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
@@ -194,12 +238,9 @@ export default function ProductDetails() {
             <button
               type="button"
               onClick={handleDelete}
-              disabled={isLoading}
-              className={`px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300 ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className="px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600"
             >
-              {isLoading ? "Deleting..." : "Delete"}
+              Delete
             </button>
           </div>
         </form>
