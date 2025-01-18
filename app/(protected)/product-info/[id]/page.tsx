@@ -75,6 +75,32 @@ export default function ProductDetails() {
     router.push("/product"); // Navigate back to the product list page
   };
 
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    if (!confirmDelete) return;
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/product/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (response.ok) {
+        alert("Product deleted successfully.");
+        router.push("/product"); // Navigate back to the product list page
+      } else {
+        const data = await response.json();
+        alert(`Failed to delete product: ${data.message}`);
+      }
+    } catch (err) {
+      console.error("Error deleting product:", err);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -164,6 +190,16 @@ export default function ProductDetails() {
               }`}
             >
               {isLoading ? "Updating..." : "Update"}
+            </button>
+            <button
+              type="button"
+              onClick={handleDelete}
+              disabled={isLoading}
+              className={`px-6 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none focus:ring focus:ring-red-300 ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              {isLoading ? "Deleting..." : "Delete"}
             </button>
           </div>
         </form>
