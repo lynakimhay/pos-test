@@ -4,6 +4,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { AppInfoContext } from "@/components/app-wrapper"; // Import useRouter
 import PageWrapper from '@/components/page-wrapper';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 // import { cookies } from "next/headers";
 
 interface FormData {
@@ -82,12 +84,20 @@ const AddCustomer: React.FC = () => {
       setSubmitSuccess(true);
       setErrors({}); // Clear errors after successful submission
       
-      // Navigate to /customer after successful submission
-      router.push('/customer');
+      toast.success("Customer Update Successfully!", {
+        position: "top-center",
+        autoClose: 5000,
+      });
+      setTimeout(() => {
+        router.replace("/customer");
+      }, 5500);
     } catch (error) {
+      toast.error("Failed To Update Customer", {
+        position: "top-center",
+        autoClose: 5000,
+      });
       console.error('Error:', error);
       setSubmitSuccess(false);
-      alert(`Error: ${(error as Error).message}`);
     } finally {
       setLoading(false);
     }
@@ -148,6 +158,14 @@ const AddCustomer: React.FC = () => {
       )}
     </form>
   </div>
+  <ToastContainer
+          autoClose={5000}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+          theme="colored"
+        /> 
   </PageWrapper>  
   );
 };
