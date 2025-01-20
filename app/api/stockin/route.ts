@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import prisma from '@/lib/prisma';
 import { error } from "console";
 import { PurchaseDetailModel } from "@/models/api/purchaseDetailModel";
-
+import { Decimal } from "@prisma/client/runtime/library";
 export async function GET(request:NextRequest){
   const data= await prisma.stockIn.findMany();
   return NextResponse.json({ message: "success", data });
@@ -15,6 +15,8 @@ interface PurchaseItemDetail {
   totalPrice: number;
   expiryDate: Date;
 }
+
+
 
 export async function POST(request: NextRequest) {
   try {
