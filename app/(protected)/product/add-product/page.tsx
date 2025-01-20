@@ -9,9 +9,7 @@ interface ProductFormData {
   nameKh: string;
   categoryId: number;
   sku: string;
-  image: string;
-  createdBy: string;
-  updatedBy: string;
+  imageUrl: string | null;
 }
 
 interface StatusMessage {
@@ -65,28 +63,35 @@ const AddProductPage = () => {
   // Loading state
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleImageUpload = async (file: File) => {
-    // Image upload to Cloudinary
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET || "");
-    
-    try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const data = await res.json();
-      return data.secure_url; // Cloudinary URL for the uploaded image
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      throw new Error("Failed to upload image.");
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    console.log(nameEn, nameKh, categoryId, sku, image);
+
+    let imageUrl: string | null = null;
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+
+      try {
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          credentials: "same-origin",
+          body: formData,
+        });
+        const uploadData = await uploadResponse.json();
+
+        imageUrl = uploadData.secure_url
+          ? uploadData.secure_url.toString()
+          : null;
+        console.log(uploadData, imageUrl);
+        console.log("Success upload")
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        return;
+      }
+    }
+
 
     // Basic validation
     if (!nameEn || !nameKh || !categoryId || !sku || !image) {
@@ -123,16 +128,14 @@ const AddProductPage = () => {
     setIsLoading(true);
 
     try {
-      const imageData = await handleImageUpload(image);
+      
       // Prepare product data
       const formData: ProductFormData = {
         nameEn,
         nameKh,
-        categoryId: categoryIdNum,
+        categoryId: parseInt(categoryId),
         sku,
-        image: imageData,
-        createdBy: "1", // Replace with actual user ID
-        updatedBy: "1", // Replace with actual user ID
+        imageUrl,
       };
 
       // Submit product data
@@ -145,6 +148,7 @@ const AddProductPage = () => {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to create product.");
