@@ -227,38 +227,41 @@ console.log(purchaseId)
       });
   };
 console.log(purchaseDetail)
-  const handleFullDelete = () => {
-    if (!purchaseId) {
-      alert("No purchase to delete.");
-      return;
-    }
 
-    const confirmDelete = confirm("Are you sure you want to delete this purchase?");
-    if (!confirmDelete) return;
+const handleFullDelete = () => {
+  if (!purchaseId) {
+    alert("No purchase to delete.");
+    return;
+  }
 
-    fetch(`/api/stockin/${purchaseId}`, {
-      method: "DELETE",
+  const confirmDelete = confirm("Are you sure you want to delete this purchase?");
+  if (!confirmDelete) return;
+
+  fetch(`/api/stockin/${purchaseId}`, {
+    method: "DELETE",
+  })
+    .then(async (response) => {
+      if (response.ok) {
+        alert("Purchase deleted successfully!");
+        router.push("/stockin"); // Redirect to the stock-in list
+      } else {
+        const errorData = await response.json();
+        alert("Purchase not deleted. Error: " + errorData.message);
+      }
     })
-      .then(async (response) => {
-        if (response.ok) {
-          alert("Purchase deleted successfully!");
-          router.push("/stockin"); // Redirect to the stock-in list
-        } else {
-          const errorData = await response.json();
-          alert(`Error: ${errorData.message}`);
-        }
-      })
-      .catch((error) => {
-        console.error("Error deleting purchase:", error);
-        alert("Failed to delete the purchase.");
-      });
-  };
-
+    .catch((error) => {
+      console.error("Error deleting purchase:", error);
+      alert("Failed to delete the purchase.");
+    });
+};
   const handleRemoveData = () => {
     setPurchaseDetail([]);
     console.log('Data removed');
     router.push("/stockin");
   };
+
+  
+
 
   return (
     <PageWrapper>
@@ -439,7 +442,6 @@ console.log(purchaseDetail)
                 <Button onClick={handleSaveMaster} className=" bg-blue-500 hover:bg-black  and text-white">Save</Button>
                 <Button className="bg-green-500 hover:bg-green-600 text-white" onClick={()=> router.back()} >Cancle</Button>
                 <Button className="bg-red-500 hover:bg-red-600 text-white" onClick={handleFullDelete}>Delete</Button>
-
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2">
