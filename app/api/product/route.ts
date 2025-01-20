@@ -1,7 +1,7 @@
 import { getSessionData } from "@/app/auth/stateless-session";
 import prisma from "@/lib/prisma";
 import { NextResponse, NextRequest } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+
 
 export interface ProductModel {
   id: number;
@@ -15,7 +15,7 @@ export interface ProductModel {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nameEn, nameKh, categoryId, sku, image } = body; // Image should be passed as "image" (case-sensitive)
+    const { nameEn, nameKh, categoryId, sku, imageUrl } = body; // Image should be passed as "image" (case-sensitive)
 
     const session = await getSessionData();
 
@@ -25,20 +25,6 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-
-    // Ensure the image is a valid base64 string (for Cloudinary upload)
-    if (!image || !image.startsWith("data:image")) {
-      return NextResponse.json(
-        { success: false, message: "Invalid image format" },
-        { status: 400 }
-      );
-    }
-
-    // Upload image to Cloudinary
-    const uploadResponse = await cloudinary.uploader.upload(image, {
-      folder: "product",
-      resource_type: "image",
-    });
 
     // Fetch the latest productCode
     const latestProduct = await prisma.product.findFirst({
@@ -61,7 +47,7 @@ export async function POST(request: NextRequest) {
         nameKh,
         categoryId: categoryId,
         sku,
-        imageUrl: uploadResponse.secure_url, // Save Cloudinary URL
+        imageUrl: imageUrl, // Save Cloudinary URL
         createdBy: session?.userId,
         updatedBy: session?.userId,
       },

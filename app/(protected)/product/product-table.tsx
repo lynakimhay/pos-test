@@ -16,6 +16,7 @@ import { productsModel } from "@/models/api/ProductsModel";
 import PaginationData from "@/models/PaginationData";
 import { TableViewPagination } from "@/components/tableview-pagination";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Props {
   title: string;
@@ -111,7 +112,12 @@ export const PageTableView: React.FC<Props> = ({ title, data }) => {
                 <TableCell>{item.nameKh}</TableCell>
                 <TableCell>{item.category}</TableCell>
                 <TableCell>{item.sku}</TableCell>
-                <TableCell>{item.ImageUrl}</TableCell>
+                <TableCell>
+                  {
+                    item.ImageUrl && 
+                    <Image src={item.ImageUrl} alt={item.nameEn} width={50} height={50}/>
+                  }
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
