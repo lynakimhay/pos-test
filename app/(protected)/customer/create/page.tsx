@@ -73,7 +73,7 @@ const AddCustomer: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:3000/api/customer/create', formData, {
+      const response = await axios.post('https://chhunlin.jetdev.life/api/customer/create', formData, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`, // Include the token in Authorization header
