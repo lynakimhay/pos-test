@@ -54,7 +54,7 @@ const AddCustomer: React.FC = () => {
       const fetchCustomer = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3000/api/customer/${id}`,
+            `/api/customer/${id}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`, // Include the token in Authorization header
@@ -119,7 +119,7 @@ const AddCustomer: React.FC = () => {
     setLoading(true);
     try {
       const response = await axios.put(
-        `https://chhunlin.jetdev.life/api/customer/update/${id}`,
+        `/api/customer/update/${id}`,
         formData,
         {
           headers: {
@@ -164,7 +164,7 @@ const AddCustomer: React.FC = () => {
 
     if (confirm("Are you sure you want to delete this customer?")) {
       try {
-        await axios.delete(`https://chhunlin.jetdev.life/api/customer/delete/${id}`, {
+        await axios.delete(`/api/customer/delete/${id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
