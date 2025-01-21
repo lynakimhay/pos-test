@@ -10,6 +10,7 @@ interface Product {
   nameKh: string;
   categoryId: number;
   sku: string;
+  imageUrl: string | null;
 }
 
 interface ProductCategory {
@@ -28,6 +29,8 @@ export default function ProductDetails() {
   const [nameKh, setNameKh] = useState<string>("");
   const [categoryId, setCategoryId] = useState<number>(0);
   const [sku, setSku] = useState<string>("");
+  const [image, setImage] = useState<File | null>(null);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,20 +40,17 @@ export default function ProductDetails() {
     type: "",
   });
 
-  const { id } = useParams(); // Access product ID from the route
+  const { id } = useParams();
   const router = useRouter();
 
-  // Fetch product categories and product details
   useEffect(() => {
     if (!id) return;
 
-    // Fetch product categories
     fetch("/api/category", { credentials: "same-origin" })
       .then((response) => response.json())
       .then((data) => setCategories(data.data))
       .catch((err) => console.error("Failed to fetch categories:", err));
 
-    // Fetch product details Get
     const fetchProduct = async () => {
       try {
         const response = await fetch(`/api/product/${id}`);
@@ -62,6 +62,7 @@ export default function ProductDetails() {
           setNameKh(data.product.nameKh);
           setCategoryId(data.product.categoryId);
           setSku(data.product.sku);
+          setCurrentImageUrl(data.product.imageUrl);
         } else {
           setError(data.message);
         }
@@ -76,12 +77,40 @@ export default function ProductDetails() {
     fetchProduct();
   }, [id]);
 
-  // Handle form submission (update product)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-  //Update product
+
     try {
+      let imageUrl = currentImageUrl;
+
+      // Handle image upload if a new image is selected
+      if (image) {
+        const formData = new FormData();
+        formData.append("file", image);
+
+        try {
+          const uploadResponse = await fetch("/api/upload", {
+            method: "POST",
+            credentials: "same-origin",
+            body: formData,
+          });
+          const uploadData = await uploadResponse.json();
+
+          imageUrl = uploadData.secure_url
+            ? uploadData.secure_url.toString()
+            : currentImageUrl;
+        } catch (error) {
+          console.error("Error uploading image:", error);
+          setStatus({
+            message: "Failed to upload image. Please try again.",
+            type: "error",
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch(`/api/product/${id}`, {
         method: "PUT",
         headers: {
@@ -92,17 +121,19 @@ export default function ProductDetails() {
           nameKh,
           categoryId,
           sku,
+          imageUrl,
         }),
       });
 
       const data = await response.json();
       if (response.ok) {
         setStatus({ message: "Product updated successfully!", type: "success" });
+        setCurrentImageUrl(imageUrl);
 
-        // Fetch updated product details
         const updatedProduct = await fetch(`/api/product/${id}`);
         const updatedData = await updatedProduct.json();
         if (updatedProduct.ok) {
+          setProduct(updatedData.product);
           setNameEn(updatedData.product.nameEn);
           setNameKh(updatedData.product.nameKh);
           setCategoryId(updatedData.product.categoryId);
@@ -119,15 +150,12 @@ export default function ProductDetails() {
       setStatus({ message: "Something went wrong. Please try again.", type: "error" });
     } finally {
       setIsLoading(false);
-
-      // Clear the status message after 3 seconds
       setTimeout(() => {
         setStatus({ message: "", type: "" });
       }, 3000);
     }
   };
 
-  // Handle delete product
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/product/${id}`, {
@@ -138,8 +166,8 @@ export default function ProductDetails() {
       if (response.ok) {
         setStatus({ message: "Product deleted successfully!", type: "success" });
         setTimeout(() => {
-          router.push("/product"); // Redirect to product list page
-        }, 3000); // Wait for 2 seconds before redirecting
+          router.push("/product");
+        }, 3000);
       } else {
         setStatus({ message: data.message || "Failed to delete product.", type: "error" });
       }
@@ -150,10 +178,9 @@ export default function ProductDetails() {
   };
 
   const handleCancel = () => {
-    router.push("/product"); // Navigate back to the product list page
+    router.push("/product");
   };
 
-  // Show loading or error state
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
 
@@ -233,6 +260,29 @@ export default function ProductDetails() {
               onChange={(e) => setSku(e.target.value)}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
               required
+            />
+          </div>
+
+          {/* New Image Upload Section */}
+          <div>
+            <label htmlFor="image" className="block text-gray-700 font-medium">
+              Product Image
+            </label>
+            {currentImageUrl && (
+              <div className="mt-2 mb-4">
+                <img
+                  src={currentImageUrl}
+                  alt="Current product"
+                  className="w-32 h-32 object-cover rounded border border-gray-300"
+                />
+              </div>
+            )}
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={(e) => setImage(e.target.files?.[0] || null)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:ring-blue-300"
             />
           </div>
 
